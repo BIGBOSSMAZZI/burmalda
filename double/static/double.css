@@ -1,0 +1,167 @@
+:root {
+  --bg: #12141c;
+  --panel: #1b1f2b;
+  --text: #eef0f6;
+  --muted: #8b92a8;
+  --red: #e0313f;
+  --black: #2a2f40;
+  --green: #1fa05a;
+  --gold: #f5c542;
+  --tile: 76px;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: "Segoe UI", system-ui, -apple-system, Roboto, sans-serif;
+}
+
+#double {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 20px 16px 40px;
+}
+
+.top {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+.top h1 { margin: 0; letter-spacing: 2px; color: var(--gold); }
+.balance { font-size: 1.15rem; color: var(--muted); }
+.balance strong { color: var(--text); font-size: 1.4rem; }
+
+/* Лента */
+.wheel { position: relative; margin: 20px 0 8px; }
+.viewport {
+  overflow: hidden;
+  border-radius: 12px;
+  background: var(--panel);
+  border: 2px solid #2c3246;
+}
+.strip {
+  display: flex;
+  will-change: transform;
+}
+.strip.animating {
+  transition: transform 4s cubic-bezier(0.12, 0.7, 0.16, 1);
+}
+.tile {
+  flex: 0 0 var(--tile);
+  height: var(--tile);
+  margin: 6px 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.4rem;
+  font-weight: 700;
+  border-left: 3px solid var(--panel);
+  border-right: 3px solid var(--panel);
+  border-radius: 10px;
+}
+.tile.red, .dot.red, .color-btn.red { background: var(--red); }
+.tile.black, .dot.black, .color-btn.black { background: var(--black); }
+.tile.green, .dot.green, .color-btn.green { background: var(--green); }
+
+.marker {
+  position: absolute;
+  top: -6px; bottom: -6px;
+  left: 50%;
+  width: 4px;
+  margin-left: -2px;
+  background: var(--gold);
+  border-radius: 2px;
+  z-index: 2;
+  box-shadow: 0 0 10px var(--gold);
+}
+
+.message {
+  min-height: 1.6em;
+  text-align: center;
+  font-size: 1.1rem;
+  margin: 10px 0 16px;
+}
+.message.win { color: #5be38b; }
+.message.lose { color: #ff6b77; }
+.message.error { color: var(--gold); }
+
+/* Панель ставок */
+.panel {
+  background: var(--panel);
+  border-radius: 12px;
+  padding: 16px;
+}
+.colors { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+.color-btn {
+  border: 3px solid transparent;
+  color: #fff;
+  border-radius: 10px;
+  padding: 14px 6px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  opacity: 0.75;
+  transition: opacity .15s, transform .15s, border-color .15s;
+}
+.color-btn span { display: block; font-size: .85rem; opacity: .85; margin-top: 2px; }
+.color-btn:hover { opacity: 1; }
+.color-btn.selected {
+  opacity: 1;
+  border-color: var(--gold);
+  transform: translateY(-2px);
+}
+
+.amount { margin-top: 16px; }
+.amount label { display: block; color: var(--muted); margin-bottom: 6px; }
+.amount input {
+  width: 100%;
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px solid #2c3246;
+  background: var(--bg);
+  color: var(--text);
+  font-size: 1.1rem;
+}
+.quick { display: flex; gap: 8px; margin-top: 8px; }
+.quick button {
+  flex: 1;
+  padding: 8px;
+  border-radius: 8px;
+  border: 1px solid #2c3246;
+  background: transparent;
+  color: var(--text);
+  cursor: pointer;
+}
+.quick button:hover { background: #262b3b; }
+
+.spin, .reset {
+  width: 100%;
+  margin-top: 16px;
+  padding: 14px;
+  border: 0;
+  border-radius: 10px;
+  font-size: 1.1rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+.spin { background: var(--gold); color: #1a1a1a; }
+.reset { background: #3a4058; color: var(--text); }
+button:disabled { opacity: .5; cursor: not-allowed; }
+
+/* История */
+.history h2 { font-size: 1rem; color: var(--muted); margin: 24px 0 8px; }
+.history-list { display: flex; flex-wrap: wrap; gap: 6px; }
+.dot {
+  width: 34px; height: 34px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: .85rem; font-weight: 700;
+}
+
+@media (max-width: 480px) {
+  :root { --tile: 64px; }
+  .tile { font-size: 1.2rem; }
+}
