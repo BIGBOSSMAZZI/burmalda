@@ -55,8 +55,14 @@ def slots_spin():
     r2 = random.choice(symbols)
     r3 = random.choice(symbols)
     
-    if r1 == r2 or r2 == r3:
-        win_amount = bet * 10
+    # исправленная логика выигрыша:
+    if r1 == r2 and r2 == r3:
+        win_amount = bet * 15
+        USER_BALANCE += win_amount
+        is_win = True
+    # 2. Утешительный приз (пара из трех картинок)
+    elif r1 == r2 or r2 == r3 or r1 == r3:
+        win_amount = bet * 2
         USER_BALANCE += win_amount
         is_win = True
     else:
