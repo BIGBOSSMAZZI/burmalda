@@ -1,6 +1,10 @@
 from flask import Flask, render_template
 app = Flask(__name__)
 
+#апгрейдер «Зачёт» подключается отдельным модулем из папки zachet
+from zachet import bp as zachet_bp
+app.register_blueprint(zachet_bp, url_prefix='/upgrader')
+
 
 #функция для открытия главной страницы (также по дефолту)
 @app.route('/main_page')
@@ -12,11 +16,6 @@ def main_page():
 @app.route('/raketka')
 def raketka():
     return render_template('raketka.html')
-
-#функция для открыия апгрейдера
-@app.route('/upgrader')
-def upgrader():
-    return render_template('upgrader.html')
 
 #функция для открытия кейс баттла
 @app.route('/case_battle')
