@@ -1,8 +1,9 @@
 import random
-from flask import Flask, render_template, jsonify, request, redirect, url_for
+from flask import Flask, render_template, jsonify, request, redirect, url_for, session
 import json
 import os
 app = Flask(__name__)
+app.secret_key = 'burmalda-secret'  # нужен, чтобы работала session
 
 # апгрейдер «Зачёт» подключается отдельным модулем из папки zachet
 from zachet import bp as zachet_bp
@@ -23,6 +24,30 @@ def load_users():
 def save_users(users):
     with open(USERS_FILE, 'w', encoding='utf-8') as f:
         json.dump(users, f, ensure_ascii=False, indent=4)
+
+
+# возвращает баланс того, кто сейчас вошёл (или None, если никто не вошёл)
+def get_balance():
+    login_name = session.get('user')
+    users = load_users()
+    if login_name not in users:
+        return None
+    return users[login_name]['balance']
+
+
+# записывает новый баланс тому, кто сейчас вошёл
+def set_balance(new_balance):
+    login_name = session.get('user')
+    users = load_users()
+    if login_name in users:
+        users[login_name]['balance'] = new_balance
+        save_users(users)
+
+
+# передаёт логин и баланс во ВСЕ шаблоны, чтобы шапка знала, кто вошёл
+@app.context_processor
+def inject_user():
+    return {'current_user': session.get('user'), 'current_balance': get_balance()}
 
 # функция для открытия главной страницы (также по дефолту)
 @app.route('/main_page')
@@ -56,18 +81,18 @@ def slots_spin():
     global USER_BALANCE
     data = request.json or {}
     bet = int(data.get('bet', 100))
-    
+
     if bet > USER_BALANCE or bet <= 0:
         return jsonify({'error': 'Недостаточно средств!'}), 400
-        
+
     USER_BALANCE -= bet
-    
+
     # Список доступных символов
     symbols = ['🍒', '🍋', '🍉', '⭐', '💎', '🔥']
-    
+
     # Задаем веса (вероятности) для каждого символа по порядку. Чем больше число, тем выше шанс выпадения элемента.
     weights = [22, 22, 22, 17, 15, 2]
-    
+
     # Генерируем каждый барабан отдельно с учетом весов
     r1 = random.choices(symbols, weights=weights)[0]
     r2 = random.choices(symbols, weights=weights)[0]
@@ -91,7 +116,7 @@ def slots_spin():
     else:
         win_amount = 0
         is_win = False
-        
+
     return jsonify({
         'reels': [r1, r2, r3],
         'is_win': is_win,
@@ -115,7 +140,8 @@ def login():
         users = load_users()
 
         if login_name in users and users[login_name]['password'] == password:
-            return render_template('profile.html', login=login_name, balance=users[login_name]['balance'])
+            session['user'] = login_name  # запоминаем, кто вошёл
+            return redirect(url_for('profile'))
         error = 'Неверный логин или пароль'
 
     return render_template('login.html', error=error)
@@ -140,6 +166,21 @@ def register():
             return redirect(url_for('login'))
 
     return render_template('register.html', error=error)
+
+
+# личный кабинет
+@app.route('/profile')
+def profile():
+    if get_balance() is None:  # никто не вошёл — отправляем на вход
+        return redirect(url_for('login'))
+    return render_template('profile.html')
+
+
+# выход из аккаунта
+@app.route('/logout')
+def logout():
+    session.pop('user', None)
+    return redirect(url_for('main_page'))
 
 
 # в этом ифе само тело программы
