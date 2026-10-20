@@ -247,6 +247,23 @@
                 justify-content: center;
             }
         }
+        .casino-slogan {
+            margin-top: 30px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: #4f5666; /* Неброский серый цвет, чтобы не отвлекать */
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            transition: color 0.3s ease, text-shadow 0.3s ease;
+            cursor: default;
+            text-align: center;
+        }
+
+        /* Мягкая подсветка при наведении */
+        .casino-slogan:hover {
+            color: #d4af37; /* Цвет матового золота под стиль логотипа */
+            text-shadow: 0 0 8px rgba(212, 175, 55, 0.4);
+        }
     </style>
 </head>
 <body>
@@ -286,6 +303,10 @@
         </div>
 
         <div id="status" class="status-message"></div>
+                <div id="status" class="status-message"></div>
+        
+        <!-- Пасхалка для игроков -->
+        <div class="casino-slogan">Депай квартиру — выбивай Николов</div>
     </div>
 
     <script src="/static/slots.js"></script>
