@@ -6,9 +6,7 @@ app = Flask(__name__)
 from zachet import bp as zachet_bp
 app.register_blueprint(zachet_bp, url_prefix='/upgrader')
 
-# Глобальный баланс игрока (пока без БД, хранится в оперативной памяти сервера)
-USER_BALANCE = 5000
-
+USER_BALANCE = 5000 #балик
 
 # функция для открытия главной страницы (также по дефолту)
 @app.route('/main_page')
@@ -29,7 +27,7 @@ def case_battle():
     return render_template('case_battle.html')
 
 
-# функция для открытия слотов (теперь передает баланс в шаблон)
+# функция для открытия слотов (передает баланс в шаблон)
 @app.route('/slots')
 def slots():
     global USER_BALANCE
@@ -43,24 +41,33 @@ def slots_spin():
     data = request.json or {}
     bet = int(data.get('bet', 100))
     
-    # ставка
     if bet > USER_BALANCE or bet <= 0:
         return jsonify({'error': 'Недостаточно средств!'}), 400
         
     USER_BALANCE -= bet
-    symbols = ['🍒', '🍋', '🍉', '⭐', '💎']
     
-    # Генерируем 3 случайных барабана
-    r1 = random.choice(symbols)
-    r2 = random.choice(symbols)
-    r3 = random.choice(symbols)
+    # Список доступных символов
+    symbols = ['🍒', '🍋', '🍉', '⭐', '💎', '🔥']
     
-    # исправленная логика выигрыша:
-    if r1 == r2 and r2 == r3:
+    # Задаем веса (вероятности) для каждого символа по порядку. Чем больше число, тем выше шанс выпадения элемента.
+    weights = [22, 22, 22, 17, 15, 2]
+    
+    # Генерируем каждый барабан отдельно с учетом весов
+    r1 = random.choices(symbols, weights=weights)[0]
+    r2 = random.choices(symbols, weights=weights)[0]
+    r3 = random.choices(symbols, weights=weights)[0]
+
+    # 1. ГЛАВНЫЙ СУПЕРПРИЗ: Три редких элемента '🔥' подряд. в фронтэнде заменится на Никола
+    if r1 == '🔥' and r2 == '🔥' and r3 == '🔥':
+        win_amount = bet * 100  # Мега-джекпот х100!
+        USER_BALANCE += win_amount
+        is_win = True
+    # 2. Обычный джекпот (все 3 совпали)
+    elif r1 == r2 and r2 == r3:
         win_amount = bet * 15
         USER_BALANCE += win_amount
         is_win = True
-    # 2. Утешительный приз (пара из трех картинок)
+    # 3. Утешительный приз (любая пара картинок)
     elif r1 == r2 or r2 == r3 or r1 == r3:
         win_amount = bet * 2
         USER_BALANCE += win_amount
@@ -68,7 +75,6 @@ def slots_spin():
     else:
         win_amount = 0
         is_win = False
-
         
     return jsonify({
         'reels': [r1, r2, r3],
