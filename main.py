@@ -126,8 +126,15 @@ def slots_spin():
 
 
 # функция для открытия тапалки
-@app.route('/vorona combat')
+@app.route('/vorona combat', methods=['GET', 'POST'])
 def vorona_combat():
+    if request.method == 'POST':
+        balance = get_balance()
+        if balance is None:  # никто не вошёл
+            return jsonify({'error': 'Сначала войди в аккаунт'}), 401
+        balance += 1000
+        set_balance(balance)
+        return jsonify({'balance': balance})
     return render_template('vorona_combat.html')
 
 # страница входа

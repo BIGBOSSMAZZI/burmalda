@@ -33,7 +33,7 @@
             <div class="d-flex gap-2 align-items-center">
                 {% if current_user %}
                     <a href="{{ url_for('profile') }}" class="btn btn-outline-primary">{{ current_user }}</a>
-                    <span class="fw-bold">{{ current_balance }} 🪙</span>
+                    <span class="fw-bold"><span id="header-balance">{{ current_balance }}</span> 🪙</span>
                     <a href="{{ url_for('logout') }}" class="btn btn-outline-danger">Выйти</a>
                 {% else %}
                     <a href="{{ url_for('login') }}" class="btn btn-outline-primary">Войти</a>
