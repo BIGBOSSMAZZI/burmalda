@@ -1,12 +1,28 @@
 import random
-from flask import Flask, render_template, jsonify, request
+from flask import Flask, render_template, jsonify, request, redirect, url_for
+import json
+import os
 app = Flask(__name__)
 
 # апгрейдер «Зачёт» подключается отдельным модулем из папки zachet
 from zachet import bp as zachet_bp
 app.register_blueprint(zachet_bp, url_prefix='/upgrader')
 
+USERS_FILE = 'users.json'
 USER_BALANCE = 5000 #балик
+START_BALANCE = 5000
+
+def load_users():
+    if not os.path.exists(USERS_FILE):
+        return {}
+    with open(USERS_FILE, 'r', encoding='utf-8') as f:
+        return json.load(f)
+
+
+# сохраняет всех пользователей в файл
+def save_users(users):
+    with open(USERS_FILE, 'w', encoding='utf-8') as f:
+        json.dump(users, f, ensure_ascii=False, indent=4)
 
 # функция для открытия главной страницы (также по дефолту)
 @app.route('/main_page')
@@ -90,15 +106,40 @@ def vorona_combat():
     return render_template('vorona_combat.html')
 
 # страница входа
-@app.route('/login')
+@app.route('/login', methods=['GET', 'POST'])
 def login():
-    return render_template('login.html')
+    error = None
+    if request.method == 'POST':
+        login_name = request.form['login']
+        password = request.form['password']
+        users = load_users()
+
+        if login_name in users and users[login_name]['password'] == password:
+            return render_template('profile.html', login=login_name, balance=users[login_name]['balance'])
+        error = 'Неверный логин или пароль'
+
+    return render_template('login.html', error=error)
 
 
 # страница регистрации
-@app.route('/register')
+@app.route('/register', methods=['GET', 'POST'])
 def register():
-    return render_template('register.html')
+    error = None
+    if request.method == 'POST':
+        login_name = request.form['login']
+        password = request.form['password']
+        users = load_users()
+
+        if not login_name or not password:
+            error = 'Заполни оба поля'
+        elif login_name in users:
+            error = 'Такой логин уже занят'
+        else:
+            users[login_name] = {'password': password, 'balance': START_BALANCE}
+            save_users(users)
+            return redirect(url_for('login'))
+
+    return render_template('register.html', error=error)
 
 
 # в этом ифе само тело программы

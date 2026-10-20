@@ -7,14 +7,18 @@
     <div class="col-12 col-sm-8 col-md-5 col-lg-4">
         <h2 class="text-center mb-4">Вход</h2>
 
-        <form>
+        {% if error %}
+            <div class="alert alert-danger">{{ error }}</div>
+        {% endif %}
+
+        <form method="post">
             <div class="mb-3">
-                <input type="text" class="form-control" placeholder="Логин">
+                <input type="text" name="login" class="form-control" placeholder="Логин">
             </div>
             <div class="mb-3">
-                <input type="password" class="form-control" placeholder="Пароль">
+                <input type="password" name="password" class="form-control" placeholder="Пароль">
             </div>
-            <button type="button" class="btn btn-primary w-100">Войти</button>
+            <button type="submit" class="btn btn-primary w-100">Войти</button>
         </form>
 
         <p class="text-center mt-3">

@@ -1,0 +1,14 @@
+{
+    "dima": {
+        "password": "12345",
+        "balance": 5000
+    },
+    "pp": {
+        "password": "11",
+        "balance": 5000
+    },
+    "rr": {
+        "password": "11",
+        "balance": 5000
+    }
+}
