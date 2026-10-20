@@ -6,8 +6,8 @@ const uid=()=>Math.random().toString(36).slice(2,10);
 function rollFloat(){const r=Math.random(),b=r<.1?0:r<.3?1:r<.72?2:r<.84?3:4,[,,lo,hi]=WEAR[b];return +(lo+Math.random()*(hi-lo)).toFixed(4)}
 const inst=c=>({u:uid(),c,f:rollFloat()});
 const fresh=()=>({bal:START,inv:[2,7,4,0].map(inst),hist:[],st:{ups:0,wins:0,cases:0,best:null},sound:true,bonusAt:0});
-let S; try{S=JSON.parse(localStorage.getItem('zachet1'))}catch(e){} if(!S||!Array.isArray(S.inv))S=fresh();
-const save=()=>{try{localStorage.setItem('zachet1',JSON.stringify(S))}catch(e){} fetch('/api/balance',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({balance:S.bal})})};
+let S=fresh();
+const save=()=>{fetch('/api/upgrader',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({balance:S.bal,state:S})})};
 let sel=new Set(), coin=0, target=null, busy=false, page='upgrade', needleDeg=0, spun=null;
 
 /* ===== отрисовка ===== */
@@ -290,3 +290,6 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'&&$('modal').innerHTM
 scaleSvg();sndIcon();renderCounts();$('bal').textContent=nf(S.bal);
 const h=location.hash.slice(1);if(['upgrade','cases','shop','inventory','profile'].includes(h))page=h;
 renderPage();
+function loadFromServer(){fetch('/api/upgrader').then(r=>r.json()).then(d=>{if(d.error){location.href='/login';return}if(d.state&&Array.isArray(d.state.inv))S=d.state;S.bal=d.balance;sel.clear();shown=S.bal;$('bal').textContent=nf(S.bal);renderCounts();renderPage()})}
+loadFromServer();
+document.addEventListener('visibilitychange',()=>{if(!document.hidden&&!busy)loadFromServer()});

@@ -141,16 +141,21 @@ def vorona_combat():
         return jsonify({'balance': balance})
     return render_template('vorona_combat.html')
 
-# баланс для апгрейдера: GET — узнать баланс, POST — сохранить новый
-@app.route('/api/balance', methods=['GET', 'POST'])
-def api_balance():
-    balance = get_balance()
-    if balance is None:  # никто не вошёл
+
+# апгрейдер: отдаёт и сохраняет баланс и прогресс (инвентарь, история) в users.json
+@app.route('/api/upgrader', methods=['GET', 'POST'])
+def api_upgrader():
+    login_name = session.get('user')
+    users = load_users()
+    if login_name not in users:  # никто не вошёл
         return jsonify({'error': 'Сначала войди в аккаунт'}), 401
+    user = users[login_name]
     if request.method == 'POST':
-        balance = int(request.json['balance'])
-        set_balance(balance)
-    return jsonify({'balance': balance})
+        data = request.json
+        user['balance'] = int(data['balance'])
+        user['upgrader'] = data['state']  # инвентарь, история, статистика
+        save_users(users)
+    return jsonify({'balance': user['balance'], 'state': user.get('upgrader')})
 
 # страница входа
 @app.route('/login', methods=['GET', 'POST'])
