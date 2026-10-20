@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% block title %}Вход{% endblock %}
+
+{% block body %}
+<div class="row justify-content-center">
+    <div class="col-12 col-sm-8 col-md-5 col-lg-4">
+        <h2 class="text-center mb-4">Вход</h2>
+
+        <form>
+            <div class="mb-3">
+                <input type="text" class="form-control" placeholder="Логин">
+            </div>
+            <div class="mb-3">
+                <input type="password" class="form-control" placeholder="Пароль">
+            </div>
+            <button type="button" class="btn btn-primary w-100">Войти</button>
+        </form>
+
+        <p class="text-center mt-3">
+            <a href="{{ url_for('register') }}">Нет аккаунта? Давай регать</a>
+        </p>
+    </div>
+</div>
+{% endblock %}

@@ -89,6 +89,17 @@ def slots_spin():
 def vorona_combat():
     return render_template('vorona_combat.html')
 
+# страница входа
+@app.route('/login')
+def login():
+    return render_template('login.html')
+
+
+# страница регистрации
+@app.route('/register')
+def register():
+    return render_template('register.html')
+
 
 # в этом ифе само тело программы
 if __name__ == '__main__':
