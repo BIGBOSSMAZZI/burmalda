@@ -71,14 +71,18 @@ def case_battle():
 # функция для открытия слотов (передает баланс в шаблон)
 @app.route('/slots')
 def slots():
-    global USER_BALANCE
-    return render_template('slots.html', balance=USER_BALANCE)
+    balance = get_balance()
+    if balance is None:  # никто не вошёл — отправляем на вход
+        return redirect(url_for('login'))
+    return render_template('slots.html', balance=balance)
 
 
 # Эндпоинт для обработки вращения барабанов (POST-запрос)
 @app.route('/slots/spin', methods=['POST'])
 def slots_spin():
-    global USER_BALANCE
+    USER_BALANCE = get_balance()  # баланс вошедшего игрока из users.json
+    if USER_BALANCE is None:
+        return jsonify({'error': 'Сначала войди в аккаунт'}), 401
     data = request.json or {}
     bet = int(data.get('bet', 100))
 
@@ -116,7 +120,7 @@ def slots_spin():
     else:
         win_amount = 0
         is_win = False
-
+    set_balance(USER_BALANCE)
     return jsonify({
         'reels': [r1, r2, r3],
         'is_win': is_win,
@@ -136,6 +140,17 @@ def vorona_combat():
         set_balance(balance)
         return jsonify({'balance': balance})
     return render_template('vorona_combat.html')
+
+# баланс для апгрейдера: GET — узнать баланс, POST — сохранить новый
+@app.route('/api/balance', methods=['GET', 'POST'])
+def api_balance():
+    balance = get_balance()
+    if balance is None:  # никто не вошёл
+        return jsonify({'error': 'Сначала войди в аккаунт'}), 401
+    if request.method == 'POST':
+        balance = int(request.json['balance'])
+        set_balance(balance)
+    return jsonify({'balance': balance})
 
 # страница входа
 @app.route('/login', methods=['GET', 'POST'])

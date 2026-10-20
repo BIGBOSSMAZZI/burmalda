@@ -7,7 +7,7 @@ function rollFloat(){const r=Math.random(),b=r<.1?0:r<.3?1:r<.72?2:r<.84?3:4,[,,
 const inst=c=>({u:uid(),c,f:rollFloat()});
 const fresh=()=>({bal:START,inv:[2,7,4,0].map(inst),hist:[],st:{ups:0,wins:0,cases:0,best:null},sound:true,bonusAt:0});
 let S; try{S=JSON.parse(localStorage.getItem('zachet1'))}catch(e){} if(!S||!Array.isArray(S.inv))S=fresh();
-const save=()=>{try{localStorage.setItem('zachet1',JSON.stringify(S))}catch(e){}};
+const save=()=>{try{localStorage.setItem('zachet1',JSON.stringify(S))}catch(e){} fetch('/api/balance',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({balance:S.bal})})};
 let sel=new Set(), coin=0, target=null, busy=false, page='upgrade', needleDeg=0, spun=null;
 
 /* ===== отрисовка ===== */
@@ -65,8 +65,6 @@ const sndIcon=()=>$('sndw').style.opacity=S.sound?1:.12;
 /* ===== баланс ===== */
 let shown=S.bal;
 function renderBal(){const a=shown,b=S.bal,t0=performance.now();const s=n=>{const k=Math.min(1,(n-t0)/400);shown=a+(b-a)*(1-(1-k)**3);$('bal').textContent=nf(shown);if(k<1)requestAnimationFrame(s)};requestAnimationFrame(s)}
-function renderBonus(){const l=S.bonusAt+BONUS_CD-Date.now(),b=$('bonus');if(l>0){b.disabled=true;b.textContent='0:'+String(Math.ceil(l/1000)).padStart(2,'0')}else{b.disabled=false;b.textContent='+'+BONUS}}
-setInterval(renderBonus,1000);
 
 /* ===== апгрейд ===== */
 const stakeVal=()=>[...sel].reduce((s,u)=>{const x=S.inv.find(i=>i.u===u);return s+(x?it(x.c).price:0)},0)+coin;
@@ -283,14 +281,12 @@ $('coin').addEventListener('change',e=>{e.target.value=coin});
 ['qShop','fShop','sShop'].forEach(id=>$(id).addEventListener('input',renderShop));
 ['qInv2','sInv2'].forEach(id=>$(id).addEventListener('input',renderInv));
 $('fShop').insertAdjacentHTML('beforeend',Object.entries(RAR).map(([k,r])=>`<option value="${k}">${r.n}</option>`).join(''));
-$('bonus').onclick=()=>{if(Date.now()-S.bonusAt<BONUS_CD)return;S.bal+=BONUS;S.bonusAt=Date.now();save();renderBal();renderBonus();renderPage();snd('coin');toast(`+${BONUS} кр на счёт`)};
 $('snd').onclick=()=>{S.sound=!S.sound;save();sndIcon();snd('click')};
 function confirmBtn(b,label,orig,fn){if(!b.dataset.arm){b.dataset.arm=1;b.textContent=label;setTimeout(()=>{delete b.dataset.arm;b.textContent=orig},3000);return}delete b.dataset.arm;b.textContent=orig;fn()}
 $('sellAll').onclick=e=>confirmBtn(e.currentTarget,'Точно продать всё?','Продать всё',()=>{const p=S.inv.reduce((s,i)=>s+Math.floor(it(i.c).price*.9),0);S.bal+=p;S.inv=[];sel.clear();save();renderBal();renderCounts();renderInv();snd('coin');toast(`Продано на ${nf(p)} кр`)});
-$('reset').onclick=e=>confirmBtn(e.currentTarget,'Нажмите ещё раз','Сбросить прогресс',()=>{S=fresh();sel.clear();coin=0;target=null;save();shown=S.bal;$('bal').textContent=nf(S.bal);renderCounts();renderPage();toast('Прогресс сброшен')});
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&$('modal').innerHTML)closeModal()});
 
 /* ===== старт ===== */
-scaleSvg();sndIcon();renderBonus();renderCounts();$('bal').textContent=nf(S.bal);
+scaleSvg();sndIcon();renderCounts();$('bal').textContent=nf(S.bal);
 const h=location.hash.slice(1);if(['upgrade','cases','shop','inventory','profile'].includes(h))page=h;
 renderPage();
