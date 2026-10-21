@@ -18,11 +18,6 @@ def main_page():
     return render_template('main_page.html')
 
 #функция для открытия ракетки
-@app.route('/raketka')
-def raketka():
-    return render_template('raketka.html')
-
-#функция для открытия ракеты (новая игра)
 @app.route('/rocket')
 def rocket():
     return render_template('index_rocket.html')
