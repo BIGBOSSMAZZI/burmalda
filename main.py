@@ -10,7 +10,6 @@ app = Flask(__name__)
 from zachet import bp as zachet_bp
 app.register_blueprint(zachet_bp, url_prefix='/upgrader')
 
-
 #функция для открытия главной страницы (также по дефолту)
 @app.route('/main_page')
 @app.route('/')
@@ -21,6 +20,11 @@ def main_page():
 @app.route('/rocket')
 def rocket():
     return render_template('index_rocket.html')
+
+#функция для открыия апгрейдера
+@app.route('/upgrader')
+def upgrader():
+    return render_template('upgrader.html')
 
 #функция для открытия кейс баттла
 @app.route('/case_battle')
@@ -36,7 +40,6 @@ def slots():
 @app.route('/vorona combat')
 def vorona_combat():
     return render_template('vorona_combat.html')
-
 
 # ---- игра «Ракета»: раунды и баланс считает сервер ----
 BET_TIME = 5.0        # секунд на ставки
