@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Зачёт</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fira+Sans+Extra+Condensed:wght@600;700;800&family=Golos+Text:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="{{ url_for('zachet.static', filename='css/style.css') }}">
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs id="defs">
+    <pattern id="hatch" patternUnits="userSpaceOnUse" width="6" height="6" patternTransform="rotate(45)"><rect width="6" height="6" fill="#262624"/><rect width="2" height="6" fill="#33322e"/></pattern>
+    <symbol id="i-pen" viewBox="0 0 120 60"><g transform="rotate(-14 60 30)"><path d="M14 23 H90 L114 30 L90 37 H14 Q7 37 7 30 Q7 23 14 23 Z"/><path d="M26 19 h30 v4 h-30z"/><path d="M38 23 v14" stroke="#000" stroke-width="2" opacity=".35"/><path d="M90 23 L114 30 L90 37Z" fill="#e8dcc4"/><path d="M104 27 L114 30 L104 33Z" fill="#000" opacity=".7"/><path d="M14 26 H88" stroke="#fff" stroke-width="1.2" opacity=".25"/></g></symbol>
+    <symbol id="i-note" viewBox="0 0 120 60"><rect x="34" y="3" width="56" height="54" rx="3"/><rect x="34" y="3" width="9" height="54" fill="#000" opacity=".3"/><path d="M30 9 h10 M30 17 h10 M30 25 h10 M30 33 h10 M30 41 h10 M30 49 h10" stroke="#1b1b19" stroke-width="3" stroke-linecap="round"/><rect x="52" y="14" width="30" height="11" rx="1" fill="#fff" opacity=".3"/><path d="M55 19.5 h22" stroke="#000" stroke-width="1.2" opacity=".35"/></symbol>
+    <symbol id="i-book" viewBox="0 0 120 60"><path d="M36 8 H92 V56 H36Z" fill="#ece6d6"/><path d="M90 10 V54 M88 10 V54" stroke="#000" stroke-width=".8" opacity=".2"/><path d="M30 4 H86 V52 H30 Z"/><rect x="30" y="4" width="9" height="48" fill="#000" opacity=".35"/><rect x="48" y="15" width="30" height="5" fill="#fff" opacity=".35"/><rect x="52" y="24" width="22" height="3" fill="#fff" opacity=".25"/><path d="M40 6 H84" stroke="#fff" stroke-width="1" opacity=".2"/></symbol>
+    <symbol id="i-cup" viewBox="0 0 120 60"><path d="M40 21 H80 L76 54 Q75.5 57 72 57 H48 Q44.5 57 44 54 Z"/><path d="M80 26 Q97 26 97 37 Q97 48 78 47 L78.6 42 Q91 42 91 37 Q91 31 79.5 31 Z"/><rect x="36" y="15" width="48" height="7" rx="2"/><rect x="36" y="15" width="48" height="7" rx="2" fill="#000" opacity=".3"/><path d="M42 32 H78 L77 42 H43 Z" fill="#000" opacity=".25"/><path d="M52 11 q-3 -4 0 -8 M60 11 q-3 -4 0 -8 M68 11 q-3 -4 0 -8" stroke="#fff" stroke-width="1.6" fill="none" opacity=".4"/></symbol>
+    <symbol id="i-calc" viewBox="0 0 120 60"><rect x="40" y="2" width="40" height="56" rx="4"/><rect x="45" y="7" width="30" height="12" rx="1" fill="#000" opacity=".55"/><path d="M58 15 h14" stroke="#9bcf55" stroke-width="2" opacity=".8"/><path d="M45 24h6v5h-6zM53 24h6v5h-6zM61 24h6v5h-6zM69 24h6v5h-6zM45 32h6v5h-6zM53 32h6v5h-6zM61 32h6v5h-6zM69 32h6v5h-6zM45 40h6v5h-6zM53 40h6v5h-6zM61 40h6v5h-6zM69 40h6v5h-6zM45 48h6v5h-6zM53 48h6v5h-6zM61 48h6v5h-6zM69 48h6v5h-6z" fill="#000" opacity=".32"/><path d="M42 4 V56" stroke="#fff" stroke-width="1" opacity=".18"/></symbol>
+    <symbol id="i-laptop" viewBox="0 0 120 60"><path d="M28 3 H92 Q95 3 95 6 V45 H25 V6 Q25 3 28 3 Z"/><rect x="30" y="8" width="60" height="32" fill="#000" opacity=".55"/><path d="M36 15 h22 M36 21 h34 M36 27 h16" stroke="#fff" stroke-width="2" opacity=".25"/><path d="M12 46 H108 L103 55 H17 Z"/><path d="M12 46 H108 V49 H12Z" fill="#000" opacity=".35"/><rect x="52" y="50" width="16" height="3" fill="#000" opacity=".3"/></symbol>
+  </defs>
+</svg>
+
+<div class="feed gut"><div class="wrap"><div class="lbl"><i></i>Выпадения</div><div class="feedrow" id="feed"></div></div></div>
+
+<header class="gut">
+  <div class="wrap">
+    <a class="home" href="{{ url_for('main_page') }}" title="На главную страницу" aria-label="На главную"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 5l-7 7 7 7"/></svg><span>Главная</span></a>
+    <div class="logo">ЗАЧЁТ<em>/</em><span>UPGRADE</span></div>
+    <nav class="tabs" id="tabs">
+      <button data-p="upgrade">Апгрейд</button>
+      <button data-p="cases">Ящики</button>
+      <button data-p="shop">Магазин</button>
+      <button data-p="inventory">Инвентарь<sup id="invN"></sup></button>
+      <button data-p="profile">Профиль</button>
+    </nav>
+    <div class="wallet" title="Кредиты — игровая валюта"><div class="sum"><span id="bal">0</span><small>кр</small></div><button id="bonus">+500</button></div>
+    <button class="mute" id="snd" aria-label="Звук"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 9v6h4l5 4V5L8 9H4z"/><path id="sndw" d="M16 9a4 4 0 0 1 0 6M18.5 6.5a8 8 0 0 1 0 11"/></svg></button>
+  </div>
+</header>
+
+<main class="gut"><div class="wrap">
+
+<section class="page" id="p-upgrade">
+  <div class="bench" id="bench">
+    <div class="col stakecol">
+      <div class="hd"><span class="lbl">Ставка</span><span class="lbl" id="selN"></span></div>
+      <div class="val"><span id="stakeV">0</span><small>кр</small></div>
+      <div id="stack"></div>
+      <div class="coins">
+        <label class="lbl" for="coin">Добавить кредиты с баланса</label>
+        <input id="coin" type="number" min="0" step="1" value="0" inputmode="numeric">
+        <button data-coin="half">½</button><button data-coin="x2">×2</button><button data-coin="max">Все</button>
+      </div>
+    </div>
+    <div class="col dial">
+      <div class="face" id="face">
+        <svg viewBox="0 0 320 320" aria-hidden="true">
+          <g id="scale"></g>
+          <circle cx="160" cy="160" r="116" fill="none" stroke="url(#hatch)" stroke-width="26"/>
+          <circle id="zone" cx="160" cy="160" r="116" fill="none" stroke="var(--accent)" stroke-width="26" stroke-dasharray="0 728.85" transform="rotate(-90 160 160)" style="transition:stroke-dasharray .35s ease"/>
+          <circle cx="160" cy="160" r="102" fill="none" stroke="var(--line)" stroke-width="1"/>
+          <circle cx="160" cy="160" r="130" fill="none" stroke="var(--line)" stroke-width="1"/>
+          <g id="needle" style="transform-origin:160px 160px">
+            <line id="needleLine" x1="160" y1="98" x2="160" y2="26" stroke="var(--fg)" stroke-width="3"/>
+            <path id="needleTip" d="M153 26 L167 26 L160 14 Z" fill="var(--fg)" stroke="var(--fg)" stroke-width="1"/>
+          </g>
+        </svg>
+        <div class="readout"><b id="pct">0,00%</b><span id="pctL">шанс</span></div>
+      </div>
+      <div class="specs">
+        <div><span class="lbl">Множитель</span><b id="mul">—</b></div>
+        <div><span class="lbl">Зона</span><b id="zoneV">—</b></div>
+        <div><span class="lbl">Выпало</span><b id="roll">—</b></div>
+      </div>
+      <button class="run" id="go" disabled>Апгрейд</button>
+      <div class="why" id="why"></div>
+    </div>
+    <div class="col tgtcol">
+      <div class="hd"><span class="lbl">Цель</span><button class="lbl" id="untgt" hidden>Сбросить ✕</button></div>
+      <div class="target" id="tgt"></div>
+    </div>
+  </div>
+
+  <div class="lists">
+    <div class="box">
+      <div class="bar"><h3>Ваши предметы</h3><input class="field" type="search" id="qInv" placeholder="Поиск" aria-label="Поиск по инвентарю">
+        <select class="field" id="sInv" aria-label="Сортировка"><option value="d">Сначала дорогие</option><option value="a">Сначала дешёвые</option></select>
+        <button class="btn" id="clrSel">Снять всё</button></div>
+      <div class="scroll"><div class="grid" id="gInv"></div></div>
+    </div>
+    <div class="box">
+      <div class="bar"><h3>Выберите цель</h3><input class="field" type="search" id="qTgt" placeholder="Поиск" aria-label="Поиск цели">
+        <div class="mults" id="mults" aria-label="Подобрать цель по множителю"><button data-x="1.5">×1.5</button><button data-x="2">×2</button><button data-x="3">×3</button><button data-x="5">×5</button><button data-x="10">×10</button></div></div>
+      <div class="scroll"><div class="grid" id="gTgt"></div></div>
+    </div>
+  </div>
+</section>
+
+<section class="page" id="p-cases" hidden>
+  <div class="phead"><div><h2>Ящики</h2><p>В каждом ящике лежит один случайный предмет. Шансы по степени полезности указаны внутри.</p></div></div>
+  <div class="crates" id="gCases"></div>
+</section>
+
+<section class="page" id="p-shop" hidden>
+  <div class="phead"><div><h2>Магазин</h2><p>Покупайте учебные вещи за кредиты и ставьте их в апгрейд.</p></div></div>
+  <div class="box">
+    <div class="bar"><h3 id="shopN"></h3><input class="field" type="search" id="qShop" placeholder="Поиск" aria-label="Поиск">
+      <select class="field" id="fShop" aria-label="Полезность"><option value="">Любая полезность</option></select>
+      <select class="field" id="sShop" aria-label="Сортировка"><option value="a">Сначала дешёвые</option><option value="d">Сначала дорогие</option></select></div>
+    <div class="grid" id="gShop"></div>
+  </div>
+</section>
+
+<section class="page" id="p-inventory" hidden>
+  <div class="phead"><div><h2>Инвентарь</h2><p id="invSum"></p></div><button class="btn" id="sellAll">Продать всё</button></div>
+  <div class="box">
+    <div class="bar"><h3>Предметы</h3><input class="field" type="search" id="qInv2" placeholder="Поиск" aria-label="Поиск">
+      <select class="field" id="sInv2" aria-label="Сортировка"><option value="d">Сначала дорогие</option><option value="a">Сначала дешёвые</option></select></div>
+    <div class="grid" id="gInv2"></div>
+  </div>
+</section>
+
+<section class="page" id="p-profile" hidden>
+  <div class="phead"><div><h2>Профиль</h2><p>Статистика и журнал операций на этом устройстве.</p></div><button class="btn" id="reset">Сбросить прогресс</button></div>
+  <div class="stats" id="stats"></div>
+  <div class="box"><div class="bar"><h3>Журнал</h3></div><div class="tablewrap" id="hist"></div></div>
+</section>
+
+</div></main>
+<footer class="gut"><div class="wrap"><span>Зачёт — учебный проект.</span><span>Кредиты не имеют реальной стоимости: их нельзя купить за деньги или вывести.</span></div></footer>
+
+<div id="modal"></div>
+<div class="toast" id="toast" role="status"></div>
+
+<script src="{{ url_for('zachet.static', filename='js/data.js') }}"></script>
+<script src="{{ url_for('zachet.static', filename='js/app.js') }}"></script>
+</body>
+</html>

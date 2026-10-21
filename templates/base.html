@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+
+    <title>{% block title %}{% endblock %}</title>
+</head>
+<body>
+    <div class="container">
+        <header class="d-flex flex-wrap align-items-center justify-content-center py-3 mb-4 border-bottom gap-3">
+            <div class="mb-2 mb-md-0">
+                <a href="/" class="d-inline-flex link-body-emphasis text-decoration-none">
+                    <img class="header__image" src="{{ url_for('static', filename='image/logo.png') }}" alt="logo">
+                </a>
+            </div>
+            <ul class="nav mb-2 justify-content-center mb-md-0">
+                {# здеся сначала вписываем имя функции , которую будем вызывать при нажатии кнопки со следующим названием #}
+                <li><a href="{{ url_for('main_page') }}" class="nav-link px-2 link-secondary">Главная</a></li>
+                <li><a href="{{ url_for('raketka') }}" class="nav-link px-2">р-р-р-Ракетка</a></li>
+                <li><a href="{{ url_for('case_battle') }}" class="nav-link px-2">Кейсы</a></li>
+                <li><a href="{{ url_for('slots') }}" class="nav-link px-2">Слоты</a></li>
+                <li><a href="{{ url_for('zachet.index') }}" class="nav-link px-2">Апгрейдер</a></li>
+                <li><a href="{{ url_for('vorona_combat') }}" class="nav-link px-2">Ворона КОМБАТ</a></li>
+
+
+            </ul>
+            <div class="d-flex gap-2">
+                <button type="button" class="btn btn-outline-primary">Войти</button>
+                <button type="button" class="btn btn-primary">Зарегистрироваться</button>
+            </div>
+        </header>
+
+        {% block body %}{% endblock %}
+    </div>
+</body>
+</html>

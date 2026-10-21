@@ -1,0 +1,19 @@
+/* Файл для визуальных настроек */
+
+body {
+    background-color: goldenrod;
+}
+
+header{
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    background: gold;
+    padding: 15px;
+}
+
+/* HEADER */
+.header__image{
+    height: 80px;
+    width: 80px;
+}
