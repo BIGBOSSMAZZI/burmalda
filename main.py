@@ -2,19 +2,33 @@ import math
 import random
 import threading
 import time
+import os
+
+
+
 
 from flask import Flask, jsonify, render_template, request
 app = Flask(__name__)
 
+app.config["SECRET_KEY"] = os.environ.get("SECRET_KEY", "dev-secret-change-me")
+
 #апгрейдер «Зачёт» подключается отдельным модулем из папки zachet
 from zachet import bp as zachet_bp
 app.register_blueprint(zachet_bp, url_prefix='/upgrader')
+
+from double import double_bp
+app.register_blueprint(double_bp, url_prefix="/double")
+
+for rule in app.url_map.iter_rules():
+    print(rule.endpoint, '->', rule.rule)
+
 
 #функция для открытия главной страницы (также по дефолту)
 @app.route('/main_page')
 @app.route('/')
 def main_page():
     return render_template('main_page.html')
+
 
 #функция для открытия ракетки
 @app.route('/rocket')
@@ -171,6 +185,8 @@ def api_cashout():
 
 new_round(time.time())   # первый раунд при запуске сервера
 
+for rule in app.url_map.iter_rules():
+    print(rule.endpoint, "->", rule.rule)
 
 #в этом ифе само тело программы
 if __name__ == '__main__':
