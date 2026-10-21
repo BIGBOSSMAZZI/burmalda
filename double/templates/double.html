@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Double — учебное казино</title>
+  <link rel="stylesheet" href="{{ url_for('double.static', filename='double.css') }}">
+</head>
+<body>
+  <main id="double"
+        data-spin-url="{{ url_for('double.api_spin') }}"
+        data-reset-url="{{ url_for('double.api_reset') }}"
+        data-slot-colors='{{ slot_colors|tojson }}'
+        data-payouts='{{ payouts|tojson }}'
+        data-history='{{ history|tojson }}'
+        data-balance="{{ balance }}"
+        data-min-bet="{{ min_bet }}"
+        data-max-bet="{{ max_bet }}">
+
+    <header class="top">
+      <h1>Double</h1>
+      <div class="balance">Баланс: <strong id="balance">{{ balance }}</strong></div>
+    </header>
+
+    <section class="wheel">
+      <div class="marker"></div>
+      <div class="viewport"><div class="strip" id="strip"></div></div>
+    </section>
+
+    <p class="message" id="message">Сделайте ставку и нажмите «Крутить»</p>
+
+    <section class="panel">
+      <div class="colors" id="colors">
+        <button type="button" class="color-btn red" data-color="red">Красное <span>x{{ payouts.red }}</span></button>
+        <button type="button" class="color-btn green" data-color="green">Зелёное <span>x{{ payouts.green }}</span></button>
+        <button type="button" class="color-btn black" data-color="black">Чёрное <span>x{{ payouts.black }}</span></button>
+      </div>
+
+      <div class="amount">
+        <label for="amount">Ставка</label>
+        <input id="amount" type="number" min="{{ min_bet }}" max="{{ max_bet }}" step="1" value="10">
+        <div class="quick">
+          <button type="button" data-action="min">Мин</button>
+          <button type="button" data-action="half">½</button>
+          <button type="button" data-action="double">x2</button>
+          <button type="button" data-action="max">Макс</button>
+        </div>
+      </div>
+
+      <button type="button" id="spin" class="spin">Крутить</button>
+      <button type="button" id="reset" class="reset" hidden>Начать заново (баланс 1000)</button>
+    </section>
+
+    <section class="history">
+      <h2>История</h2>
+      <div id="history" class="history-list"></div>
+    </section>
+  </main>
+
+  <script src="{{ url_for('double.static', filename='double.js') }}"></script>
+</body>
+</html>
