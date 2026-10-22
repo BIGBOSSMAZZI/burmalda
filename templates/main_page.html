@@ -1,21 +1,19 @@
-{# наследование настроек от базы.хтмл#}
 {% extends 'base.html' %}
 
-{# название страницы #}
-{% block title %}Главная страница{% endblock %}
+{% block title %}Главная — БУРМАЛДА{% endblock %}
 
-{# тело #}
 {% block body %}
-<h1>У тебя большая елда? Играй на сайте БУРМАЛДА</h1>
-<ul>
-    {# всякая хрень - можно стирать#}
-    <li>Lorem ipsum dolor sit amet.</li>
-    <li>Explicabo labore minima repellendus ut!</li>
-    <li>Ab eum provident reiciendis vel!</li>
-    <li>Accusantium enim iusto molestias tempora.</li>
-    <li>Atque cumque dolorem perferendis perspiciatis.</li>
-    <li>Eaque enim nesciunt ut voluptatibus.</li>
-    <li>Cum cumque cupiditate deserunt veritatis.</li>
-    <li>Aspernatur illum omnis quaerat sit!</li>
-</ul>
+<div class="main-hero-block">
+    <h1 class="main-title">У тебя большая елда? Играй на сайте БУРМАЛДА</h1>
+    <ul class="main-list">
+        <li>Lorem ipsum dolor sit amet.</li>
+        <li>Explicabo labore minima repellendus ut!</li>
+        <li>Ab eum provident reiciendis vel!</li>
+        <li>Accusantium enim iusto molestias tempora.</li>
+        <li>Atque cumque dolorem perferendis perspiciatis.</li>
+        <li>Eaque enim nesciunt ut voluptatibus.</li>
+        <li>Cum cumque cupiditate deserunt veritatis.</li>
+        <li>Aspernatur illum omnis quaerat sit!</li>
+    </ul>
+</div>
 {% endblock %}

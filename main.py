@@ -77,7 +77,6 @@ def rocket():
         return redirect(url_for('login'))
     return render_template('index_rocket.html')
 
-
 # функция для открытия слотов (передает баланс в шаблон)
 @app.route('/slots')
 def slots():
