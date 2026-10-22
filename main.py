@@ -73,6 +73,8 @@ def main_page():
 
 @app.route('/rocket')
 def rocket():
+    if get_balance() is None:  # никто не вошёл — отправляем на вход
+        return redirect(url_for('login'))
     return render_template('index_rocket.html')
 
 # функция для открытия кейс баттла
@@ -170,9 +172,8 @@ state = {
     "launch_time": 0.0,       # когда ракета взлетела
     "crash_at": 1.0,          # множитель краха (скрыт, пока не случился)
     "next_round_at": 0.0,     # когда начнётся следующий раунд
-    "balance": 1000.0,
-    "bet": 0.0,
-    "cashed_out": None,       # множитель, на котором игрок забрал
+    "bets": {},          # {логин: ставка} в текущем раунде
+    "cashed_out": {},    # {логин: множитель, на котором забрал}
     "history": [],            # последние краши
 }
 
@@ -194,8 +195,8 @@ def new_round(now):
     state["phase"] = "waiting"
     state["bet_end"] = now + BET_TIME
     state["crash_at"] = gen_crash()
-    state["bet"] = 0.0
-    state["cashed_out"] = None
+    state["bets"] = {}
+    state["cashed_out"] = {}
 
 
 def advance(now):
@@ -215,7 +216,7 @@ def advance(now):
         new_round(now)
 
 
-def snapshot(now):
+def snapshot(now, user=None):
     phase = state["phase"]
     if phase == "flying":
         mult = min(current_mult(now), state["crash_at"])
@@ -229,9 +230,9 @@ def snapshot(now):
         "multiplier": mult,
         "crash_at": state["crash_at"] if phase == "crashed" else None,
         "bet_left": max(0.0, state["bet_end"] - now) if phase == "waiting" else 0.0,
-        "balance": round(state["balance"], 2),
-        "bet": state["bet"],
-        "cashed_out": state["cashed_out"],
+        "balance": get_balance() or 0,
+        "bet": state["bets"].get(user, 0),
+        "cashed_out": state["cashed_out"].get(user),
         "history": state["history"],
     }
 
@@ -240,14 +241,17 @@ def api_state():
     with lock:
         now = time.time()
         advance(now)
-        return jsonify(snapshot(now))
+        return jsonify(snapshot(now, session.get('user')))
 
 
 @app.route("/api/bet", methods=["POST"])
 def api_bet():
+    user = session.get('user')
+    if get_balance() is None:
+        return jsonify(error="Сначала войди в аккаунт"), 401
     data = request.get_json(silent=True) or {}
     try:
-        amount = float(data.get("amount", 0))
+        amount = int(float(data.get("amount", 0)))
     except (TypeError, ValueError):
         return jsonify(error="Некорректная ставка"), 400
 
@@ -256,31 +260,35 @@ def api_bet():
         advance(now)
         if state["phase"] != "waiting":
             return jsonify(error="Ставки принимаются только перед взлётом"), 409
-        if state["bet"] > 0:
+        if state["bets"].get(user, 0) > 0:
             return jsonify(error="Ставка уже сделана"), 409
-        if amount <= 0 or amount > state["balance"]:
+        balance = get_balance()
+        if amount <= 0 or amount > balance:
             return jsonify(error="Недостаточно средств или неверная ставка"), 400
-        state["balance"] = round(state["balance"] - amount, 2)
-        state["bet"] = amount
-        return jsonify(snapshot(now))
+        set_balance(balance - amount)      # списали ставку с аккаунта
+        state["bets"][user] = amount
+        return jsonify(snapshot(now, user))
 
 
 @app.route("/api/cashout", methods=["POST"])
 def api_cashout():
+    user = session.get('user')
+    if get_balance() is None:
+        return jsonify(error="Сначала войди в аккаунт"), 401
     with lock:
         now = time.time()
         advance(now)
-        if state["phase"] != "flying" or state["bet"] <= 0 or state["cashed_out"] is not None:
+        bet = state["bets"].get(user, 0)
+        if state["phase"] != "flying" or bet <= 0 or user in state["cashed_out"]:
             return jsonify(error="Забрать сейчас нельзя"), 409
         mult = min(current_mult(now), state["crash_at"])
         if mult >= state["crash_at"]:
             # ракета уже взорвалась в этот момент
             advance(now)
             return jsonify(error="Ракета уже взорвалась"), 409
-        state["cashed_out"] = mult
-        state["balance"] = round(state["balance"] + state["bet"] * mult, 2)
-        state["bet"] = 0.0
-        return jsonify(snapshot(now))
+        state["cashed_out"][user] = mult
+        set_balance(get_balance() + int(bet * mult))   # выигрыш на аккаунт
+        return jsonify(snapshot(now, user))
 
 new_round(time.time())   # первый раунд при запуске сервера
 
