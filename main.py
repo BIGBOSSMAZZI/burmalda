@@ -77,11 +77,6 @@ def rocket():
         return redirect(url_for('login'))
     return render_template('index_rocket.html')
 
-# функция для открытия кейс баттла
-@app.route('/case_battle')
-def case_battle():
-    return render_template('case_battle.html')
-
 
 # функция для открытия слотов (передает баланс в шаблон)
 @app.route('/slots')
