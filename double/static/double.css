@@ -1,167 +1,303 @@
+/* ==========================================================================
+   СТИЛИ ДАБЛА (DOUBLE PROTOCOL) В ТЕРМИНАЛЬНОМ СТИЛЕ CYBEROS
+   ========================================================================== */
+
 :root {
-  --bg: #12141c;
-  --panel: #1b1f2b;
-  --text: #eef0f6;
-  --muted: #8b92a8;
-  --red: #e0313f;
-  --black: #2a2f40;
-  --green: #1fa05a;
-  --gold: #f5c542;
-  --tile: 76px;
+    --double-tile: 76px;
+    --c-red: #c92a2a;
+    --c-black: #1a1a1f;
+    --c-green: #2b8a3e;
 }
 
-* { box-sizing: border-box; }
+/* Центрирование окна дабла в рабочей зоне */
+.double-page-wrapper {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    padding-top: 10px;
+}
 
-body {
-  margin: 0;
-  background: var(--bg);
-  color: var(--text);
-  font-family: "Segoe UI", system-ui, -apple-system, Roboto, sans-serif;
+.double-terminal-window {
+    width: 100%;
+    max-width: 960px;
+    margin: 0 auto;
+}
+
+.double-body {
+    padding: 24px !important;
 }
 
 #double {
-  max-width: 760px;
-  margin: 0 auto;
-  padding: 20px 16px 40px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
 }
 
-.top {
-  display: flex;
-  justify-content: space-between;
-  align-items: baseline;
+/* --------------------------------------------------------------------------
+   БЕГУЩАЯ ЛЕНТА
+   -------------------------------------------------------------------------- */
+.wheel {
+    position: relative;
+    margin: 10px 0 16px;
 }
-.top h1 { margin: 0; letter-spacing: 2px; color: var(--gold); }
-.balance { font-size: 1.15rem; color: var(--muted); }
-.balance strong { color: var(--text); font-size: 1.4rem; }
 
-/* Лента */
-.wheel { position: relative; margin: 20px 0 8px; }
 .viewport {
-  overflow: hidden;
-  border-radius: 12px;
-  background: var(--panel);
-  border: 2px solid #2c3246;
+    overflow: hidden;
+    background: #060200;
+    border: 2px solid var(--amber-solid);
+    box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.95);
 }
+
 .strip {
-  display: flex;
-  will-change: transform;
+    display: flex;
+    will-change: transform;
 }
+
 .strip.animating {
-  transition: transform 4s cubic-bezier(0.12, 0.7, 0.16, 1);
+    transition: transform 4s cubic-bezier(0.12, 0.7, 0.16, 1);
 }
+
+/* Плитка числа на ленте */
 .tile {
-  flex: 0 0 var(--tile);
-  height: var(--tile);
-  margin: 6px 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1.4rem;
-  font-weight: 700;
-  border-left: 3px solid var(--panel);
-  border-right: 3px solid var(--panel);
-  border-radius: 10px;
+    flex: 0 0 var(--double-tile);
+    height: var(--double-tile);
+    margin: 8px 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    font-weight: 800;
+    font-family: inherit;
+    border: 1px solid rgba(255, 157, 0, 0.25);
+    user-select: none;
 }
-.tile.red, .dot.red, .color-btn.red { background: var(--red); }
-.tile.black, .dot.black, .color-btn.black { background: var(--black); }
-.tile.green, .dot.green, .color-btn.green { background: var(--green); }
 
+/* Цвета секторов */
+.tile.red, .dot.red, .color-btn.red { background: var(--c-red); color: #fff; }
+.tile.black, .dot.black, .color-btn.black { background: var(--c-black); color: #ffb732; border: 1px solid rgba(255, 157, 0, 0.35); }
+.tile.green, .dot.green, .color-btn.green { background: var(--c-green); color: #fff; }
+
+/* Янтарный лазер-указатель по центру */
 .marker {
-  position: absolute;
-  top: -6px; bottom: -6px;
-  left: 50%;
-  width: 4px;
-  margin-left: -2px;
-  background: var(--gold);
-  border-radius: 2px;
-  z-index: 2;
-  box-shadow: 0 0 10px var(--gold);
+    position: absolute;
+    top: -6px;
+    bottom: -6px;
+    left: 50%;
+    width: 4px;
+    margin-left: -2px;
+    background: var(--amber-bright);
+    z-index: 5;
+    box-shadow: 0 0 14px var(--amber-solid), 0 0 4px #ffffff;
+    pointer-events: none;
 }
 
+/* --------------------------------------------------------------------------
+   СТАТУС И СООБЩЕНИЯ
+   -------------------------------------------------------------------------- */
 .message {
-  min-height: 1.6em;
-  text-align: center;
-  font-size: 1.1rem;
-  margin: 10px 0 16px;
+    min-height: 28px;
+    text-align: center;
+    font-size: 1.1rem;
+    font-weight: 700;
+    margin: 12px 0 20px;
+    color: var(--amber-bright);
 }
-.message.win { color: #5be38b; }
-.message.lose { color: #ff6b77; }
-.message.error { color: var(--gold); }
 
-/* Панель ставок */
+.message.win {
+    color: #ffd276;
+    text-shadow: 0 0 12px var(--amber-glow);
+}
+
+.message.lose {
+    color: #ff453a;
+    text-shadow: 0 0 10px rgba(255, 69, 58, 0.6);
+}
+
+.message.error {
+    color: var(--amber-solid);
+}
+
+/* --------------------------------------------------------------------------
+   ПАНЕЛЬ УПРАВЛЕНИЯ СТАВКАМИ
+   -------------------------------------------------------------------------- */
 .panel {
-  background: var(--panel);
-  border-radius: 12px;
-  padding: 16px;
+    background: rgba(10, 4, 0, 0.85);
+    border: 1px solid rgba(255, 157, 0, 0.35);
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
 }
-.colors { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+
+/* Кнопки выбора цвета */
+.colors {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+}
+
 .color-btn {
-  border: 3px solid transparent;
-  color: #fff;
-  border-radius: 10px;
-  padding: 14px 6px;
-  font-size: 1rem;
-  font-weight: 600;
-  cursor: pointer;
-  opacity: 0.75;
-  transition: opacity .15s, transform .15s, border-color .15s;
+    border: 2px solid transparent;
+    padding: 14px 8px;
+    font-family: inherit;
+    font-size: 1.05rem;
+    font-weight: 800;
+    cursor: pointer;
+    opacity: 0.8;
+    transition: all 0.16s ease;
+    text-shadow: 0 0 6px rgba(0, 0, 0, 0.8);
 }
-.color-btn span { display: block; font-size: .85rem; opacity: .85; margin-top: 2px; }
-.color-btn:hover { opacity: 1; }
+
+.color-btn span {
+    display: block;
+    font-size: 0.9rem;
+    margin-top: 4px;
+}
+
+.color-btn:hover {
+    opacity: 1;
+    transform: translateY(-2px);
+    box-shadow: 0 0 14px rgba(255, 157, 0, 0.4);
+}
+
 .color-btn.selected {
-  opacity: 1;
-  border-color: var(--gold);
-  transform: translateY(-2px);
+    opacity: 1;
+    border-color: var(--amber-bright);
+    box-shadow: 0 0 20px var(--amber-glow);
+    transform: translateY(-2px);
 }
 
-.amount { margin-top: 16px; }
-.amount label { display: block; color: var(--muted); margin-bottom: 6px; }
-.amount input {
-  width: 100%;
-  padding: 12px;
-  border-radius: 8px;
-  border: 1px solid #2c3246;
-  background: var(--bg);
-  color: var(--text);
-  font-size: 1.1rem;
+/* Поле ставки и быстрые кнопки */
+.amount-box {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
 }
-.quick { display: flex; gap: 8px; margin-top: 8px; }
+
+.amount-row {
+    display: flex;
+    align-items: center;
+    background: #050201;
+    border: 1px solid var(--amber-solid);
+    padding: 6px 14px;
+}
+
+.amount-row label, .currency-tag {
+    color: var(--amber-solid);
+    font-weight: 700;
+    font-size: 1.1rem;
+}
+
+#amount {
+    flex: 1;
+    background: transparent;
+    border: none;
+    color: var(--amber-bright);
+    font-family: inherit;
+    font-size: 1.25rem;
+    font-weight: 800;
+    padding: 4px 10px;
+    outline: none;
+}
+
+.quick {
+    display: flex;
+    gap: 8px;
+}
+
 .quick button {
-  flex: 1;
-  padding: 8px;
-  border-radius: 8px;
-  border: 1px solid #2c3246;
-  background: transparent;
-  color: var(--text);
-  cursor: pointer;
+    flex: 1;
+    padding: 8px;
+    border: 1px solid rgba(255, 157, 0, 0.4);
+    background: rgba(255, 157, 0, 0.08);
+    color: var(--amber-bright);
+    font-family: inherit;
+    font-size: 0.9rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.15s ease;
 }
-.quick button:hover { background: #262b3b; }
 
-.spin, .reset {
-  width: 100%;
-  margin-top: 16px;
-  padding: 14px;
-  border: 0;
-  border-radius: 10px;
-  font-size: 1.1rem;
-  font-weight: 700;
-  cursor: pointer;
+.quick button:hover {
+    background: var(--amber-solid);
+    color: var(--text-black);
+    box-shadow: 0 0 10px var(--amber-glow);
 }
-.spin { background: var(--gold); color: #1a1a1a; }
-.reset { background: #3a4058; color: var(--text); }
-button:disabled { opacity: .5; cursor: not-allowed; }
 
-/* История */
-.history h2 { font-size: 1rem; color: var(--muted); margin: 24px 0 8px; }
-.history-list { display: flex; flex-wrap: wrap; gap: 6px; }
+/* Кнопка запуска рулетки */
+.spin-btn {
+    width: 100%;
+    padding: 14px;
+    background: var(--amber-solid);
+    color: var(--text-black);
+    border: 1px solid var(--amber-solid);
+    font-family: inherit;
+    font-size: 1.2rem;
+    font-weight: 800;
+    cursor: pointer;
+    box-shadow: 0 0 16px var(--amber-glow);
+    transition: all 0.16s ease;
+}
+
+.spin-btn:hover {
+    background: var(--amber-bright);
+    box-shadow: 0 0 24px var(--amber-glow);
+    transform: translateY(-2px);
+}
+
+.spin-btn:disabled {
+    background: rgba(255, 157, 0, 0.15);
+    color: rgba(255, 157, 0, 0.4);
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+.reset-btn {
+    width: 100%;
+    padding: 10px;
+    background: transparent;
+    border: 1px dashed #ff453a;
+    color: #ff453a;
+    font-family: inherit;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.reset-btn:hover {
+    background: #ff453a;
+    color: #000;
+}
+
+/* --------------------------------------------------------------------------
+   ИСТОРИЯ ВЫПАДЕНИЙ
+   -------------------------------------------------------------------------- */
+.history {
+    margin-top: 20px;
+}
+
+.history-title {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--amber-solid);
+    margin-bottom: 8px;
+}
+
+.history-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
 .dot {
-  width: 34px; height: 34px;
-  border-radius: 50%;
-  display: flex; align-items: center; justify-content: center;
-  font-size: .85rem; font-weight: 700;
-}
-
-@media (max-width: 480px) {
-  :root { --tile: 64px; }
-  .tile { font-size: 1.2rem; }
+    width: 36px;
+    height: 36px;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.95rem;
+    font-weight: 800;
+    user-select: none;
+    box-shadow: 0 0 8px rgba(0, 0, 0, 0.6);
 }

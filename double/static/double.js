@@ -72,7 +72,10 @@
   // ---------- Интерфейс ----------
   function setBalance(value) {
     state.balance = value;
-    balanceEl.textContent = value;
+    if (balanceEl) balanceEl.textContent = value;
+    // Синхронизация с верхним балансом в шапке сайта
+    const topBal = document.getElementById("header-balance");
+    if (topBal) topBal.textContent = value;
     const broke = value < MIN_BET;
     resetBtn.hidden = !broke;
     spinBtn.disabled = state.spinning || broke;
