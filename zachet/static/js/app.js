@@ -16,13 +16,6 @@ const pc=n=>n.toFixed(2).replace('.',',');
 const it=c=>CAT[c];
 const wearOf=f=>WEAR.find(w=>f>=w[2]&&f<w[3])||WEAR[4];
 const pr=n=>`<span class="pr">${nf(n)}<small>кр</small></span>`;
-const art=i=>`<svg viewBox="0 0 120 60"><use href="#i-${i.type}" fill="url(#f${i.id})"/></svg>`;
-document.getElementById('defs').insertAdjacentHTML('beforeend',CAT.map(i=>{
-  const s=8+(i.id%4)*2;
-  if(i.pat===0)return `<pattern id="f${i.id}" patternUnits="userSpaceOnUse" width="${s}" height="${s}" patternTransform="rotate(${30+i.id*17%60})"><rect width="${s}" height="${s}" fill="${i.c1}"/><rect width="${s*.4}" height="${s}" fill="${i.c2}"/></pattern>`;
-  if(i.pat===1){let h=`<pattern id="f${i.id}" patternUnits="userSpaceOnUse" width="40" height="30"><rect width="40" height="30" fill="${i.c1}"/>`;let x=i.id*7+3;for(let k=0;k<6;k++){x=(x*37+11)%97;h+=`<ellipse cx="${x%40}" cy="${(x*3)%30}" rx="${5+x%6}" ry="${3+x%4}" fill="${i.c2}" opacity="${k%2?.9:.6}"/>`}return h+'</pattern>'}
-  return `<linearGradient id="f${i.id}" x1="0" y1="0" x2="1" y2=".4"><stop offset="0" stop-color="${i.c2}"/><stop offset=".5" stop-color="${i.c1}"/><stop offset="1" stop-color="${i.c2}"/></linearGradient>`;
-}).join(''));
 function slot(i,o={}){
   const t=o.btn?'button':'div', w=o.f!=null?wearOf(o.f):null;
   return `<${t} class="slot ${o.cls||''}" style="--rc:${RAR[i.rar].c}" ${o.attr||''}>${o.tag?`<span class="tag">${o.tag}</span>`:''}
@@ -118,7 +111,7 @@ function spin(){
   busy=true; snd('click');
   const t=it(target), roll=Math.random()*100, win=roll<ch*100;
   const items=[...sel].map(u=>S.inv.find(i=>i.u===u)).filter(Boolean), paid=coin;
-  spun={v,ch,items}; S.inv=S.inv.filter(i=>!sel.has(i.u)); S.bal-=paid; renderBal(); renderCounts(); save();
+  spun={v,ch,items}; S.inv=S.inv.filter(i=>!sel.has(i.u)); S.bal-=paid; renderBal(); save();
   renderUpgrade(); $('pctL').textContent='вращение'; $('roll').textContent='…';
   const n=$('needle'),cur=needleDeg%360;
   n.classList.add('now');n.style.transform=`rotate(${cur}deg)`;n.getBoundingClientRect();n.classList.remove('now');
@@ -136,8 +129,7 @@ function spin(){
     const from=items.map(i=>it(i.c).skin).concat(paid?[nf(paid)+' кр']:[]).join(', ');
     S.hist.unshift({k:'up',win,from,to:t.skin,ch:ch*100,d:win?t.price-v:-v,at:Date.now()});S.hist=S.hist.slice(0,100);
     sel.clear();coin=0;target=null;save();
-    renderUpgrade(); renderCounts();
-    $('face').classList.add(win?'win':'lose');
+    renderUpgrade();     $('face').classList.add(win?'win':'lose');
     $('pct').textContent=pc(roll);$('pctL').textContent=win?'попадание':'мимо';
     $('roll').textContent=pc(roll);
     const B=$('bench');B.classList.remove('flash-win','flash-lose');void B.offsetWidth;B.classList.add(win?'flash-win':'flash-lose');
@@ -194,7 +186,7 @@ function openCase(id){
     busy=false; tp.children[W].classList.add('hit');
     const x=inst(won.id);S.inv.push(x);S.st.cases++;best(won.id);
     S.hist.unshift({k:'case',from:'Ящик «'+c.name+'»',to:won.skin,d:won.price-c.price,at:Date.now()});S.hist=S.hist.slice(0,100);save();
-    renderCounts();renderCases();snd(won.price>=c.price?'win':'coin');feed(won.id,true);
+    renderCases();snd(won.price>=c.price?'win':'coin');feed(won.id,true);
     const w=wearOf(x.f);
     $('cact').innerHTML=`<span class="msg">${TYPES[won.type]} «${won.skin}» · <span class="mono" style="color:var(--muted);font-weight:400">${w[1]} ${x.f.toFixed(3)}</span> · ${pr(won.price)}</span>
       <button class="btn" data-sellu="${x.u}">Продать за ${nf(won.price*.9)} кр</button><button class="btn pri" data-open="${c.id}" ${S.bal<c.price?'disabled':''}>Ещё раз за ${nf(c.price)} кр</button>`;
@@ -206,13 +198,6 @@ function renderShop(){
   const list=CAT.filter(i=>match(i,$('qShop').value)&&(!$('fShop').value||i.rar===$('fShop').value)).sort(sorter($('sShop').value));
   $('shopN').textContent=list.length+' позиций';
   $('gShop').innerHTML=list.length?list.map(i=>slot(i,{extra:`<div class="acts"><button class="pri" data-buy="${i.id}" ${S.bal<i.price?'disabled':''}>${S.bal<i.price?'Не хватает':'Купить'}</button></div>`})).join(''):'<div class="empty"><b>Ничего не найдено</b>Измените поиск или фильтр</div>';
-}
-function renderInv(){
-  const all=invItems(),list=all.filter(i=>match(i,$('qInv2').value)).sort(sorter($('sInv2').value));
-  $('invSum').textContent=all.length?`${all.length} шт. на ${nf(all.reduce((s,i)=>s+i.price,0))} кр. При продаже вы получаете 90% цены.`:'Здесь хранятся купленные и выигранные предметы.';
-  $('sellAll').disabled=!all.length;
-  $('gInv2').innerHTML=list.length?list.map(i=>slot(i,{f:i.f,extra:`<div class="acts"><button data-up="${i.u}">В апгрейд</button><button data-sellu="${i.u}">Продать · ${nf(i.price*.9)}</button></div>`})).join('')
-    :`<div class="empty"><b>${all.length?'Ничего не найдено':'Пусто'}</b>Загляните в магазин или откройте ящик</div>`;
 }
 function renderProfile(){
   const st=S.st,tot=S.inv.reduce((s,i)=>s+it(i.c).price,0),b=st.best!=null?it(st.best):null;
@@ -226,12 +211,11 @@ function renderProfile(){
      <td class="n ${h.d>=0?'pos':'neg'}">${h.d>=0?'+':'−'}${nf(Math.abs(h.d))}</td></tr>`).join('')}</tbody></table>`
     :'<div class="empty"><b>Журнал пуст</b>Здесь появятся апгрейды и открытые ящики</div>';
 }
-const renderCounts=()=>$('invN').textContent=S.inv.length||'';
 function best(c){if(S.st.best==null||it(c).price>it(S.st.best).price)S.st.best=c}
 function renderPage(){
   document.querySelectorAll('#tabs button').forEach(b=>b.dataset.p===page?b.setAttribute('aria-current','page'):b.removeAttribute('aria-current'));
   document.querySelectorAll('.page').forEach(p=>p.hidden=p.id!=='p-'+page);
-  ({upgrade:renderUpgrade,cases:renderCases,shop:renderShop,inventory:renderInv,profile:renderProfile})[page]();
+  ({upgrade:renderUpgrade,cases:renderCases,shop:renderShop,profile:renderProfile})[page]();
 }
 function go(p){page=p;try{history.replaceState(null,'','#'+p)}catch(e){}renderPage();scrollTo({top:0})}
 
@@ -268,10 +252,9 @@ document.addEventListener('click',e=>{
     if(c){target=c.id;renderUpgrade()}else toast('Нет подходящих целей')}
   else if(d.coin){coin=d.coin==='max'?S.bal:d.coin==='half'?Math.floor(coin/2):Math.min(S.bal,Math.max(1,coin*2));$('coin').value=coin;renderUpgrade()}
   else if(d.case)caseModal(d.case);
-  else if(d.buy!=null){const i=it(+d.buy);if(S.bal<i.price)return;S.bal-=i.price;S.inv.push(inst(i.id));save();renderBal();renderCounts();renderShop();snd('coin');toast(`Куплено: ${i.skin}`)}
-  else if(d.sellu){const x=S.inv.find(i=>i.u===d.sellu);if(!x)return;const p=Math.floor(it(x.c).price*.9);S.bal+=p;S.inv=S.inv.filter(i=>i!==x);sel.delete(d.sellu);save();renderBal();renderCounts();snd('coin');toast(`Продано за ${nf(p)} кр`);
+  else if(d.buy!=null){const i=it(+d.buy);if(S.bal<i.price)return;S.bal-=i.price;S.inv.push(inst(i.id));save();renderBal();renderShop();snd('coin');toast(`Куплено: ${i.skin}`)}
+  else if(d.sellu){const x=S.inv.find(i=>i.u===d.sellu);if(!x)return;const p=Math.floor(it(x.c).price*.9);S.bal+=p;S.inv=S.inv.filter(i=>i!==x);sel.delete(d.sellu);save();renderBal();snd('coin');toast(`Продано за ${nf(p)} кр`);
     if(d.after==='close')closeModal();else if($('cact')){b.disabled=true;b.textContent='Продано';renderCases()}else renderPage()}
-  else if(d.up){sel.add(d.up);go('upgrade')}
 });
 $('go').onclick=spin;
 $('clrSel').onclick=()=>{if(busy)return;sel.clear();coin=0;$('coin').value=0;renderUpgrade()};
@@ -279,17 +262,15 @@ $('coin').addEventListener('input',e=>{coin=Math.max(0,Math.min(S.bal,Math.floor
 $('coin').addEventListener('change',e=>{e.target.value=coin});
 ['qInv','sInv','qTgt'].forEach(id=>$(id).addEventListener('input',renderUpgrade));
 ['qShop','fShop','sShop'].forEach(id=>$(id).addEventListener('input',renderShop));
-['qInv2','sInv2'].forEach(id=>$(id).addEventListener('input',renderInv));
 $('fShop').insertAdjacentHTML('beforeend',Object.entries(RAR).map(([k,r])=>`<option value="${k}">${r.n}</option>`).join(''));
 $('snd').onclick=()=>{S.sound=!S.sound;save();sndIcon();snd('click')};
 function confirmBtn(b,label,orig,fn){if(!b.dataset.arm){b.dataset.arm=1;b.textContent=label;setTimeout(()=>{delete b.dataset.arm;b.textContent=orig},3000);return}delete b.dataset.arm;b.textContent=orig;fn()}
-$('sellAll').onclick=e=>confirmBtn(e.currentTarget,'Точно продать всё?','Продать всё',()=>{const p=S.inv.reduce((s,i)=>s+Math.floor(it(i.c).price*.9),0);S.bal+=p;S.inv=[];sel.clear();save();renderBal();renderCounts();renderInv();snd('coin');toast(`Продано на ${nf(p)} кр`)});
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&$('modal').innerHTML)closeModal()});
 
 /* ===== старт ===== */
-scaleSvg();sndIcon();renderCounts();$('bal').textContent=nf(S.bal);
-const h=location.hash.slice(1);if(['upgrade','cases','shop','inventory','profile'].includes(h))page=h;
+scaleSvg();sndIcon();$('bal').textContent=nf(S.bal);
+const h=location.hash.slice(1);if(['upgrade','cases','shop','profile'].includes(h))page=h;
 renderPage();
-function loadFromServer(){fetch('/api/upgrader').then(r=>r.json()).then(d=>{if(d.error){location.href='/login';return}if(d.state&&Array.isArray(d.state.inv))S=d.state;S.bal=d.balance;sel.clear();shown=S.bal;$('bal').textContent=nf(S.bal);renderCounts();renderPage()})}
+function loadFromServer(){fetch('/api/upgrader').then(r=>r.json()).then(d=>{if(d.error){location.href='/login';return}if(d.state&&Array.isArray(d.state.inv))S=d.state;S.bal=d.balance;sel.clear();const up=new URLSearchParams(location.search).get('up');if(up){if(S.inv.some(i=>i.u===up)){sel.add(up);page='upgrade'}history.replaceState(null,'',location.pathname+'#'+page)}shown=S.bal;$('bal').textContent=nf(S.bal);renderPage()})}
 loadFromServer();
 document.addEventListener('visibilitychange',()=>{if(!document.hidden&&!busy)loadFromServer()});
