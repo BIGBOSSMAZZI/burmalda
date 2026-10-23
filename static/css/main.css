@@ -738,3 +738,176 @@ a.quick-nav-item:hover * {
     user-select: none;
     text-align: center;
 }
+
+/* ==========================================================================
+   10. СТИЛИ ИГРОВОГО МОДУЛЯ «СЛОТЫ» С ЦЕНТРИРОВАНИЕМ И ЯЧЕЙКАМИ
+   ========================================================================== */
+/* Центрирование окна на странице */
+.slots-page-wrapper {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+}
+
+.slots-terminal-window {
+    width: 100%;
+    margin: 0 auto;
+}
+
+/* Центрирование содержимого внутри терминала */
+.slots-body {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    text-align: center !important;
+    padding: 24px !important;
+}
+
+/* Центрированный контейнер автомата с относительным позиционированием */
+.gambling-machine-box {
+    position: relative !important;
+    width: 100%;
+    max-width: 620px;          /* Оптимальный размер автомата */
+    margin: 0 auto 24px auto !important; /* Центрирует картинку по горизонтали */
+    display: block;
+    user-select: none;
+}
+
+/* Сама картинка автомата */
+.machine-case-img {
+    width: 100% !important;
+    height: auto !important;
+    display: block !important;
+    margin: 0 auto !important;
+    pointer-events: none;
+}
+
+/* Общие стили ячеек внутри автомата */
+.reel {
+    position: absolute !important;
+    top: 38.5% !important;     /* Смещение сверху ровно под окно */
+    height: 31% !important;    /* Высота выреза ячейки */
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    font-size: clamp(2rem, 4vw, 3.4rem) !important;
+    background-color: #0b0401 !important;
+    overflow: hidden !important;
+    border: 2px solid rgba(255, 157, 0, 0.4) !important;
+    box-shadow: inset 0 0 16px rgba(0, 0, 0, 0.95) !important;
+    z-index: 2;
+}
+
+/* Точные координаты левой, средней и правой ячейки */
+.reel-slot-1 { left: 4.8% !important;  width: 26.4% !important; }
+.reel-slot-2 { left: 36.8% !important; width: 26.4% !important; }
+.reel-slot-3 { left: 68.8% !important; width: 26.4% !important; }
+
+/* Картинка супер-приза (Никола) внутри ячейки */
+.reel img {
+    width: 82% !important;
+    height: 82% !important;
+    object-fit: contain !important;
+}
+
+/* Анимация вращения */
+.spinning {
+    animation: cleanSpin 0.1s infinite linear;
+}
+
+@keyframes cleanSpin {
+    0% { filter: blur(2px); transform: translateY(-3px); }
+    100% { filter: blur(4px); transform: translateY(3px); }
+}
+
+/* Панель управления по центру */
+.slots-controls {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 16px !important;
+    margin: 0 auto !important;
+}
+
+.slots-bet-group {
+    display: inline-flex;
+    align-items: center;
+    background-color: #050201;
+    border: 1px solid var(--amber-solid);
+    padding: 8px 14px;
+    color: var(--amber-bright);
+    font-weight: 700;
+}
+
+.bet-label, .bet-currency {
+    color: var(--amber-solid);
+    font-size: 1.05rem;
+}
+
+#bet-input {
+    background: transparent;
+    border: none;
+    color: var(--amber-bright);
+    font-family: inherit;
+    font-size: 1.25rem;
+    font-weight: 700;
+    width: 85px;
+    text-align: center;
+    outline: none;
+}
+
+.slots-spin-btn {
+    background-color: var(--amber-solid);
+    color: var(--text-black);
+    border: 1px solid var(--amber-solid);
+    font-family: inherit;
+    font-size: 1.15rem;
+    font-weight: 800;
+    padding: 10px 28px;
+    cursor: pointer;
+    box-shadow: 0 0 14px var(--amber-glow);
+    transition: var(--transition);
+}
+
+.slots-spin-btn:hover {
+    background-color: var(--amber-bright);
+    box-shadow: 0 0 22px var(--amber-glow);
+    transform: translateY(-2px);
+}
+
+.slots-spin-btn:disabled {
+    background-color: rgba(255, 157, 0, 0.15);
+    color: rgba(255, 157, 0, 0.4);
+    border-color: rgba(255, 157, 0, 0.3);
+    cursor: not-allowed;
+    box-shadow: none;
+    transform: none;
+}
+
+.status-message {
+    margin-top: 18px;
+    font-size: 1.15rem;
+    min-height: 28px;
+    font-weight: 700;
+    text-align: center;
+}
+
+.status-message.win {
+    color: #ffd276;
+    text-shadow: 0 0 14px var(--amber-glow);
+}
+
+.status-message.lose {
+    color: #ff453a;
+    text-shadow: 0 0 10px rgba(255, 69, 58, 0.6);
+}
+
+.casino-slogan {
+    margin-top: 20px;
+    font-size: 0.85rem;
+    color: rgba(255, 157, 0, 0.45);
+    letter-spacing: 1px;
+    text-align: center;
+    user-select: none;
+}

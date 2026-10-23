@@ -29,12 +29,14 @@ function updateUI(res, loop, rls, bal, st, btn) {
         let val = res.reels[i];
         if (val !== '🔥') isSuper = false;
         if (val === '🔥') {
-            rls[i].innerHTML = '<img src="/static/jackpot.jpg" alt="🔥">';
+            rls[i].innerHTML = '<img src="/static/jackpot.png" alt="🔥">';
         } else {
             rls[i].innerText = val;
         }
     }
-    bal.innerText = res.balance;
+    if (bal) bal.innerText = res.balance;
+    let topHeaderBal = document.getElementById('header-balance');
+    if (topHeaderBal) topHeaderBal.innerText = res.balance;
     if (res.is_win) {
         st.className = 'status-message win';
         if (isSuper) {
@@ -59,7 +61,7 @@ function playSlots() {
     let btn = document.getElementById('spin-btn');
     let inp = document.getElementById('bet-input');
     let st = document.getElementById('status');
-    let bal = document.getElementById('balance-display');
+    let bal = document.getElementById('header-balance') || document.getElementById('balance-display');
     let rls = [document.getElementById('reel1'), document.getElementById('reel2'), document.getElementById('reel3')];
     st.innerHTML = '';
     btn.disabled = true;
@@ -70,7 +72,7 @@ function playSlots() {
         for (let i = 0; i < rls.length; i++) {
             let rand = syms[Math.floor(Math.random() * syms.length)];
             if (rand === '🔥') {
-                rls[i].innerHTML = '<img src="/static/jackpot.jpg" alt="🔥">';
+                rls[i].innerHTML = '<img src="/static/jackpot.png" alt="🔥">';
             } else {
                 rls[i].innerText = rand;
             }
