@@ -783,11 +783,10 @@ a.quick-nav-item:hover * {
     pointer-events: none;
 }
 
-/* Общие стили ячеек внутри автомата */
-.reel {
+.gambling-machine-box .reel {
     position: absolute !important;
-    top: 38.5% !important;     /* Смещение сверху ровно под окно */
-    height: 31% !important;    /* Высота выреза ячейки */
+    top: 38.5% !important;
+    height: 31% !important;
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;
@@ -799,10 +798,9 @@ a.quick-nav-item:hover * {
     z-index: 2;
 }
 
-/* Точные координаты левой, средней и правой ячейки */
-.reel-slot-1 { left: 4.8% !important;  width: 26.4% !important; }
-.reel-slot-2 { left: 36.8% !important; width: 26.4% !important; }
-.reel-slot-3 { left: 68.8% !important; width: 26.4% !important; }
+.gambling-machine-box .reel-slot-1 { left: 4.8% !important;  width: 26.4% !important; }
+.gambling-machine-box .reel-slot-2 { left: 36.8% !important; width: 26.4% !important; }
+.gambling-machine-box .reel-slot-3 { left: 68.8% !important; width: 26.4% !important; }
 
 /* Картинка супер-приза (Никола) внутри ячейки */
 .reel img {
@@ -898,7 +896,7 @@ a.quick-nav-item:hover * {
     text-shadow: 0 0 14px var(--amber-glow);
 }
 
-.status-message.lose {
+.status-message .lose {
     color: #ff453a;
     text-shadow: 0 0 10px rgba(255, 69, 58, 0.6);
 }
@@ -910,4 +908,174 @@ a.quick-nav-item:hover * {
     letter-spacing: 1px;
     text-align: center;
     user-select: none;
+}
+
+/* ==========================================================================
+   11. ИНВЕНТАРЬ И ПРЕДМЕТЫ В ЛИЧНОМ КАБИНЕТЕ (/profile)
+   ========================================================================== */
+
+/* Цвета редкостей предметов для карточек профиля */
+:root {
+    --r1: #8a857b; /* Бесполезное */
+    --r2: #38a3ff; /* Пригодится */
+    --r3: #bd6eff; /* Полезное */
+    --r4: #ff3377; /* Очень нужное */
+    --r5: #ffb732; /* Незаменимое */
+}
+
+/* Карточка предмета */
+.upg-item.card {
+    background-color: #120700 !important;
+    border: 1px solid rgba(255, 157, 0, 0.35) !important;
+    border-radius: 0 !important;
+    position: relative !important;
+    overflow: hidden !important;
+    transition: all 0.16s ease-out !important;
+    box-shadow: 0 0 12px rgba(0, 0, 0, 0.8) !important;
+}
+
+/* Цветная полоска редкости слева */
+.upg-item.card::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: 3px;
+    background: var(--rc, var(--amber-solid));
+    z-index: 2;
+}
+
+.upg-item.card:hover {
+    border-color: var(--amber-solid) !important;
+    box-shadow: 0 0 18px rgba(255, 157, 0, 0.35) !important;
+    transform: translateY(-2px);
+}
+
+/* Подложка под иконку предмета */
+.upg-art {
+    background: radial-gradient(circle at 50% 60%, rgba(255, 157, 0, 0.08), transparent 75%) !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    padding: 16px 8px !important;
+    border-bottom: 1px solid rgba(255, 157, 0, 0.15) !important;
+}
+
+.upg-art svg {
+    width: 100% !important;
+    max-width: 130px !important;
+    height: 56px !important;
+    filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.7));
+}
+
+/* Текстовый блок карточки */
+.upg-item .card-body {
+    background: #120700 !important;
+    color: var(--amber-bright) !important;
+    padding: 10px 12px !important;
+    font-family: inherit !important;
+}
+
+/* Тип и степень износа */
+.upg-item .text-body-secondary {
+    color: rgba(255, 183, 50, 0.6) !important;
+    font-size: 0.78rem !important;
+}
+
+/* Название предмета */
+.upg-item .fw-semibold {
+    color: #ffffff !important;
+    font-weight: 700 !important;
+    font-size: 0.95rem !important;
+    margin: 3px 0 !important;
+}
+
+/* Название редкости */
+.upg-item .upg-rar {
+    color: var(--rc, var(--amber-solid)) !important;
+    font-size: 0.78rem !important;
+    font-weight: 800 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.5px !important;
+}
+
+/* Цена предмета */
+.upg-item .fw-bold {
+    color: var(--amber-bright) !important;
+    font-size: 1.05rem !important;
+    font-weight: 800 !important;
+    text-shadow: 0 0 8px rgba(255, 157, 0, 0.4) !important;
+}
+
+/* Подвал карточки */
+.upg-item .card-footer {
+    background: #080300 !important;
+    border-top: 1px solid rgba(255, 157, 0, 0.2) !important;
+    padding: 8px 10px !important;
+}
+
+/* Кнопка «В апгрейд» */
+.upg-item .btn-outline-primary {
+    background: var(--amber-solid) !important;
+    color: #0a0400 !important;
+    border: 1px solid var(--amber-solid) !important;
+    border-radius: 0 !important;
+    font-family: inherit !important;
+    font-weight: 800 !important;
+    font-size: 0.82rem !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.5px !important;
+    box-shadow: 0 0 10px rgba(255, 157, 0, 0.35) !important;
+    transition: all 0.15s ease !important;
+}
+
+.upg-item .btn-outline-primary:hover {
+    background: var(--amber-bright) !important;
+    box-shadow: 0 0 18px var(--amber-glow) !important;
+    transform: translateY(-1px) !important;
+}
+
+/* Кнопка «Продать» */
+.upg-item .btn-outline-secondary {
+    background: rgba(255, 157, 0, 0.08) !important;
+    color: var(--amber-bright) !important;
+    border: 1px solid rgba(255, 157, 0, 0.35) !important;
+    border-radius: 0 !important;
+    font-family: inherit !important;
+    font-weight: 700 !important;
+    font-size: 0.8rem !important;
+    transition: all 0.15s ease !important;
+}
+
+.upg-item .btn-outline-secondary:hover {
+    background: rgba(255, 69, 58, 0.2) !important;
+    border-color: #ff453a !important;
+    color: #ff453a !important;
+}
+
+/* Инфо-строка инвентаря */
+#upgInvSum {
+    color: var(--amber-solid) !important;
+    font-size: 0.9rem !important;
+    font-weight: 600 !important;
+}
+
+/* Кнопка «Продать всё» */
+#upgSellAll {
+    color: #ff453a !important;
+    border: 1px dashed #ff453a !important;
+    background: transparent !important;
+    border-radius: 0 !important;
+    padding: 3px 10px !important;
+    font-size: 0.85rem !important;
+    font-weight: 700 !important;
+    font-family: inherit !important;
+    cursor: pointer !important;
+    transition: all 0.15s ease !important;
+}
+
+#upgSellAll:hover {
+    background: #ff453a !important;
+    color: #000000 !important;
 }

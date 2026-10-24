@@ -18,7 +18,7 @@ SLOT_COLORS = ["green"] + ["red"] * 7 + ["black"] * 7
 PAYOUTS = {"red": 2, "black": 2, "green": 14}
 
 MIN_BET = 1
-MAX_BET = 10_000
+MAX_BET = 10**100
 
 
 class BetError(ValueError):

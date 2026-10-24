@@ -118,12 +118,12 @@ def slots_spin():
         is_win = True
     # 2. Обычный джекпот (все 3 совпали)
     elif r1 == r2 and r2 == r3:
-        win_amount = bet * 15
+        win_amount = bet * 10
         USER_BALANCE += win_amount
         is_win = True
     # 3. Утешительный приз (любая пара картинок)
     elif r1 == r2 or r2 == r3 or r1 == r3:
-        win_amount = bet * 2
+        win_amount = round(bet * 1.5)
         USER_BALANCE += win_amount
         is_win = True
     else:
